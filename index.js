@@ -1,1 +1,1 @@
-module.exports = require('./diff')
+module.exports = require('./dif')
