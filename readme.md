@@ -1,4 +1,3 @@
-
 Dif.js
 ======
 
@@ -13,13 +12,13 @@ Usage
 Node.js
 
 ```js
-var diff = require('diff')
+var dif = require('dif')
 ```
 
 Browser
 
 ```html
-<script src="diff.min.js"></script>
+<script src="dif.min.js"></script>
 ```
 
 
@@ -29,7 +28,7 @@ Example
 ```js
 var a = {foo: 1, bar: 2}
 var b = {bar: 4, baz: true}
-var c = diff(a, b)
+var c = dif(a, b)
 // {
 //   foo: 1
 // , bar: 4
@@ -44,7 +43,7 @@ Install
 With [npm](https://npmjs.org)
 
 ```
-npm install diff
+npm install dif
 ```
 
 

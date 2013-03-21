@@ -1,3 +1,9 @@
+/**
+ * (c) 2012 Major League Soccer
+ * MIT Licensed
+ * For all details and documentation:
+ * https://github.com/majorleaguesoccer/dif.js
+ */
 
 ;(function() {
 'use strict';
@@ -10,10 +16,29 @@ var toString = Object.prototype.toString
   , slice = Array.prototype.slice
 
 /**
+ * Get all defaults
+ *
+ * @param {Object} options hash
+ * @api private
+ */
+
+function defaults(options) {
+  var opt = {
+    preserveDefaults: true
+  }
+  options = options || {}
+  for (var prop in options) {
+    opt[prop] = options[prop]
+  }
+  return opt
+}
+
+/**
  * Determine if an object is empty
  *
  * @param {Object} target
  * @returns {Boolean} empty
+ * @api private
  */
 
 function isEmpty(obj) {
@@ -28,6 +53,7 @@ function isEmpty(obj) {
  *
  * @param {Array} target
  * @returns {String} sorted stringified
+ * @api private
  */
 
 function cloneSort(obj) {
@@ -35,55 +61,55 @@ function cloneSort(obj) {
 }
 
 /**
- * Find the difference in any number of objects
+ * Find the difference between two objects
  *
  * @param {Object} original object
- * @param {...} objects to compare
+ * @param {Object} objects to compare
+ * @param {Object} options hash (optional)
  * @returns {Object} diff results
  */
 
-function diff(old) {
+function dif(old, source, options, preserve) {
   var resp = {}, tmp
-    , args = slice.call(arguments, 1)
+  options = defaults(options)
+  // Ensure valid arguments
+  ;[old, source, options].forEach(function(test) {
+    if (toString.call(test) !== '[object Object]') {
+      throw new TypeError('Dif arguments must be objects')
+    }
+  })
+  for (var prop in source) {
+    var val = old[prop]
+      , cmp = source[prop]
+      , valType = toString.call(val)
 
-  for (var i = 0; i < args.length; i++) {
-    var source = args[i]
-    for (var prop in source) {
-      var val = old[prop]
-        , cmp = source[prop]
-        , valType = toString.call(val)
+    // Ensure valid property
+    if (!source.hasOwnProperty(prop)) continue
 
-      // Ensure valid property
-      if (!source.hasOwnProperty(prop)) continue
-
-      // Type checking
-      if (valType !== toString.call(cmp)) {
-        resp[prop] = cmp
-      // Nested objects
-      } else if (valType === '[object Object]') {
-        tmp = diff(val, cmp)
-        if (!isEmpty(tmp)) {
-          resp[prop] = tmp
-        }
-      // Array comparison
-      } else if (valType === '[object Array]') {
-        if (cloneSort(val) !== cloneSort(cmp)) {
-          resp[prop] = cmp
-        }
-      // Value comparison
-      } else if (val !== cmp) {
+    // Type checking
+    if (valType !== toString.call(cmp)) {
+      resp[prop] = cmp
+    // Nested objects
+    } else if (valType === '[object Object]') {
+      tmp = dif(val, cmp, options, options.preserveNested)
+      if (!isEmpty(tmp)) {
+        resp[prop] = tmp
+      }
+    // Array comparison
+    } else if (valType === '[object Array]') {
+      if (cloneSort(val) !== cloneSort(cmp)) {
         resp[prop] = cmp
       }
+    // Value comparison
+    } else if (val !== cmp) {
+      resp[prop] = cmp
     }
   }
   // Find missing properties
   for (var prop in old) {
     if (!old.hasOwnProperty(prop)) continue
-    for (var i = 0; i < args.length; i++) {
-      var source = args[i]
-      if (!source.hasOwnProperty(prop) && !resp.hasOwnProperty(prop)) {
-        resp[prop] = old[prop]
-      }
+    if (!source.hasOwnProperty(prop) && !resp.hasOwnProperty(prop)) {
+      resp[prop] = old[prop]
     }
   }
   return resp
@@ -94,9 +120,9 @@ function diff(old) {
  */
 
 if (typeof exports !== 'undefined') {
-  module.exports = diff
+  module.exports = dif
 } else {
-  this.diff = diff
+  this.dif = dif
 }
 
 }).call(this);

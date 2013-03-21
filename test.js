@@ -2,6 +2,7 @@
 var dif = require('./index')
   , assert = require('assert')
   , ase = assert.strictEqual
+  , at = assert.throws
 
 describe('dif.js', function() {
   it('should work with simple properties', function() {
@@ -92,5 +93,34 @@ describe('dif.js', function() {
     ase(c.hi, 'there')
     ase(c.hello, 'you')
     ase(c.whats, 'up?')
+  })
+
+  it('should preserve nested properties', function() {
+    var opt = {
+      preserveNested: true
+    }
+    var a = {
+      one: {
+        a: 1
+      , b: 2
+      , c: 3
+      }
+    }
+    var b = {
+      one: {
+        a: 4
+      }
+    }
+    var c = dif(a, b, opt)
+    ase(c.one.a, 4)
+    ase(c.one.b, 2)
+    ase(c.one.c, 3)
+  })
+
+  it('should throw an error for non-object args', function() {
+    at(function() { dif({}, true) }, TypeError)
+    at(function() { dif() }, TypeError)
+    at(function() { dif(1, 2) }, TypeError)
+    at(function() { dif([], {}) }, TypeError)
   })
 })
