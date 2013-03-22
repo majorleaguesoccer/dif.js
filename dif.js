@@ -86,9 +86,9 @@ function isEqual(a, b) {
   if (type !== toString.call(b)) {
     return false
   } else if (type === '[object Number]') {
-    return a != +a 
-      ? b != +b 
-      : (a == 0 ? 1 / a == 1 / b : a == +b)
+    return a !== +a 
+      ? b !== +b 
+      : (a === 0 ? 1 / a === 1 / b : a === +b)
   } else if (type === '[object Array]') {
     // Simple array compare
     return cloneSort(a) === cloneSort(b)
@@ -160,7 +160,7 @@ function dif(old, source, options, depth) {
     if (!preserve && isObject(val) && isObject(cmp)) {
       tmp = dif(val, cmp, options, depth + 1)
       // Ignore empty results
-      !isEmpty(tmp) && (resp[prop] = tmp)
+      isEmpty(tmp) || (resp[prop] = tmp)
     } else if (!equal) {
       // Value diff, add to results
       resp[prop] = cmp
@@ -175,6 +175,12 @@ function dif(old, source, options, depth) {
   }
   return resp
 }
+
+/**
+ * Current library version, should match `package.json`
+ */
+
+dif.VERSION = '0.0.4'
 
 /*!
  * Module exports.

@@ -4,8 +4,13 @@ var dif = require('./index')
   , ase = assert.strictEqual
   , ade = assert.deepEqual
   , at = assert.throws
+  , info = require('./package.json')
 
 describe('dif.js', function() {
+  it('should have the correct version', function() {
+    ase(dif.VERSION, info.version)
+  })
+
   it('should work with simple properties', function() {
     var a = {
       foo: 'asdf'
