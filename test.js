@@ -2,6 +2,7 @@
 var dif = require('./index')
   , assert = require('assert')
   , ase = assert.strictEqual
+  , ade = assert.deepEqual
   , at = assert.throws
 
 describe('dif.js', function() {
@@ -95,26 +96,142 @@ describe('dif.js', function() {
     ase(c.whats, 'up?')
   })
 
-  it('should preserve nested properties', function() {
-    var opt = {
-      preserveNested: true
-    }
+  it('should preserve nested properties with depths', function() {
     var a = {
       one: {
         a: 1
       , b: 2
       , c: 3
+      , two: {
+          red: 'red'
+        , blue: 'blue'
+        , pink: 'pink'
+        , three: {
+            hi: true
+          , there: false
+          , blah: 20
+          }
+        }
       }
     }
     var b = {
       one: {
         a: 4
+      , two: {
+          three: {
+            hi: 'meow'
+          }
+        }
       }
     }
-    var c = dif(a, b, opt)
-    ase(c.one.a, 4)
-    ase(c.one.b, 2)
-    ase(c.one.c, 3)
+    var c = dif(a, b, {preserve: true, depth: 1})
+    ade(c, { 
+      one: { 
+        a: 4
+      , two: { 
+          three: { 
+            hi: 'meow' 
+          } 
+        } 
+      } 
+    })
+    var d = dif(a, b, {preserve: true, depth: 2})
+    ade(d, {
+      one: {
+        a: 4
+      , two: {
+          three: {
+            hi: 'meow'
+          }
+        }
+      , b: 2
+      , c: 3
+      }
+    })
+    var e = dif(a, b, {preserve: true, depth: 3})
+    ade(e, {
+      one: {
+        a: 4
+      , two: {
+          three: {
+            hi: 'meow'
+          }
+        , red: 'red'
+        , blue: 'blue'
+        , pink: 'pink'
+        }
+      , b: 2
+      , c: 3
+      }
+    })
+    var f = dif(a, b, {preserve: false})
+  })
+
+  it('should preserve nested properties', function() {
+    var a = {
+      a: { 
+        b: 'Win',
+        c: '13',
+        d: '13',
+        e: 0 
+      },
+      f: { 
+        g: 'Lose',
+        h: '149',
+        i: '149',
+        j: 0 
+      }
+    }
+
+    var b = { 
+      a: {
+        b: 'Win',
+        c: '13',
+        d: '13',
+        e: 0 
+      },
+      f: { 
+        g: 'Lose',
+        h: '150',
+        i: '150',
+        j: 0 
+      }
+    }
+    var c = dif(a, b, {preserve: true})
+    var d = dif(a, b, {preserve: false})
+  })
+
+  it('should work with all object types', function() {
+    var a = {
+      a: 1
+    , b: ['a', 2, false]
+    , c: {
+        d: 3
+      , e: true
+      , f: new Date(2010)
+      , g: {
+          h: /g+/
+        , i: new RegExp(/^g+$/)
+        , j: NaN
+        }
+      }
+    }
+    var b = {
+      a: 1
+    , b: [2, false, 'a']
+    , c: {
+        d: 3
+      , e: true
+      , f: new Date(2010)
+      , g: {
+          h: /g+/
+        , i: new RegExp(/^g+$/)
+        , j: NaN
+        }
+      }
+    }
+    var c = dif(a, b)
+    ase(Object.keys(c).length, 0)
   })
 
   it('should throw an error for non-object args', function() {

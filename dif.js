@@ -24,7 +24,8 @@ var toString = Object.prototype.toString
 
 function defaults(options) {
   var opt = {
-    preserveDefaults: true
+    preserve: true
+  , depth: 1
   }
   options = options || {}
   for (var prop in options) {
@@ -49,6 +50,17 @@ function isEmpty(obj) {
 }
 
 /**
+ * Determine if value is an object
+ *
+ * @param {Any} test value
+ * @returns {Boolean} result
+ */
+
+function isObject(val) {
+  return toString.call(val) === '[object Object]'
+}
+
+/**
  * Clone, sort, and stringify an array
  *
  * @param {Array} target
@@ -61,6 +73,51 @@ function cloneSort(obj) {
 }
 
 /**
+ * Determine if two values are equal
+ *
+ * @param {Any} compare
+ * @param {Any} compare
+ * @returns {Boolean} result
+ * @api private
+ */
+
+function isEqual(a, b) {
+  var type = toString.call(a)
+  if (type !== toString.call(b)) {
+    return false
+  } else if (type === '[object Number]') {
+    return a != +a 
+      ? b != +b 
+      : (a == 0 ? 1 / a == 1 / b : a == +b)
+  } else if (type === '[object Array]') {
+    // Simple array compare
+    return cloneSort(a) === cloneSort(b)
+  } else if (type === '[object Date]' || type === '[object Boolean]') {
+    // Check primative values
+    return +a === +b
+  } else if (type === '[object RegExp]') {
+    // Check source patterns and flags
+    return a.source == b.source
+      && a.global == b.global
+      && a.multiline == b.multiline
+      && a.ignoreCase == b.ignoreCase
+  } else if (type === '[object Object]') {
+    // Ensure same property count
+    if (Object.keys(a).length !== Object.keys(b).length) {
+      return false
+    }
+    // Test each property
+    for (var prop in a) {
+      if (!a.hasOwnProperty(prop)) continue
+      if (!b.hasOwnProperty(prop)) return false
+      if (!isEqual(a[prop], b[prop])) return false
+    }
+    return true
+  }
+  return a === b
+}
+
+/**
  * Find the difference between two objects
  *
  * @param {Object} original object
@@ -69,39 +126,43 @@ function cloneSort(obj) {
  * @returns {Object} diff results
  */
 
-function dif(old, source, options, preserve) {
-  var resp = {}, tmp
+function dif(old, source, options, depth) {
+  var resp = {}, tmp, preserve
+  // Options with defaults
   options = defaults(options)
+  // Branching depth
+  depth = depth || 1
+  preserve = options.preserve && depth >= options.depth
   // Ensure valid arguments
-  ;[old, source, options].forEach(function(test) {
-    if (toString.call(test) !== '[object Object]') {
-      throw new TypeError('Dif arguments must be objects')
-    }
-  })
+  if (!isObject(old) || !isObject(source) || !isObject(options)) {
+    throw new TypeError('Dif arguments must be objects')
+  }
+  // Iterate through all properties
   for (var prop in source) {
     var val = old[prop]
       , cmp = source[prop]
       , valType = toString.call(val)
+      , equal = false
 
     // Ensure valid property
     if (!source.hasOwnProperty(prop)) continue
-
-    // Type checking
-    if (valType !== toString.call(cmp)) {
+    // Check if property exists for both objects
+    if (!old.hasOwnProperty(prop)) {
       resp[prop] = cmp
-    // Nested objects
-    } else if (valType === '[object Object]') {
-      tmp = dif(val, cmp, options, options.preserveNested)
-      if (!isEmpty(tmp)) {
-        resp[prop] = tmp
-      }
-    // Array comparison
-    } else if (valType === '[object Array]') {
-      if (cloneSort(val) !== cloneSort(cmp)) {
-        resp[prop] = cmp
-      }
-    // Value comparison
-    } else if (val !== cmp) {
+      continue
+    }
+    // Find value equality, if equal continue on
+    equal = isEqual(val, cmp)
+    if (equal) continue
+    
+    // Nested objects, resurse through the object if we do not wish to 
+    // preserve structure, or if we do and have reached the target depth
+    if (!preserve && isObject(val) && isObject(cmp)) {
+      tmp = dif(val, cmp, options, depth + 1)
+      // Ignore empty results
+      !isEmpty(tmp) && (resp[prop] = tmp)
+    } else if (!equal) {
+      // Value diff, add to results
       resp[prop] = cmp
     }
   }
