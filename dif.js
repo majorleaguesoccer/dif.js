@@ -24,8 +24,9 @@ var toString = Object.prototype.toString
 
 function defaults(options) {
   var opt = {
-    preserve: true
-  , depth: 1
+    preserve: true // Preserve nested objects
+  , depth: 1       // Preservation branch depth
+  , removed: false // Consider missing props removed
   }
   options = options || {}
   for (var prop in options) {
@@ -170,7 +171,7 @@ function dif(old, source, options, depth) {
   for (var prop in old) {
     if (!old.hasOwnProperty(prop)) continue
     if (!source.hasOwnProperty(prop) && !resp.hasOwnProperty(prop)) {
-      resp[prop] = old[prop]
+      resp[prop] = options.removed ? undefined : old[prop]
     }
   }
   return resp
@@ -180,7 +181,7 @@ function dif(old, source, options, depth) {
  * Current library version, should match `package.json`
  */
 
-dif.VERSION = '0.0.4'
+dif.VERSION = '0.0.5'
 
 /*!
  * Module exports.

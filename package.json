@@ -1,6 +1,6 @@
 {
   "name": "dif"
-, "version": "0.0.4"
+, "version": "0.0.5"
 , "license": "MIT"
 , "author": "Beau Sorensen <mail@beausorensen.com> (http://github.com/sorensen)"
 , "description": "Object diffing"

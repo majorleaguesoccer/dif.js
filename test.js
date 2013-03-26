@@ -239,6 +239,25 @@ describe('dif.js', function() {
     ase(Object.keys(c).length, 0)
   })
 
+  it('should consider missing keys as removed', function() {
+    var a = {
+      one: 1
+    , two: 2
+    , three: 3
+    }
+    var b = {
+      three: 4
+    }
+    var c = dif(a, b, {
+      removed: true
+    })
+    ase(c.three, 4)
+    ase(c.one, undefined)
+    ase(c.two, undefined)
+    ase('one' in c, true)
+    ase('two' in c, true)
+  })
+
   it('should throw an error for non-object args', function() {
     at(function() { dif({}, true) }, TypeError)
     at(function() { dif() }, TypeError)

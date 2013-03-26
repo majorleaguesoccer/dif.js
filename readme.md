@@ -21,9 +21,20 @@ Browser
 <script src="dif.min.js"></script>
 ```
 
+Options
+-------
+
+You can supply an options hash as the third argument to change behavior
+
+* `preserve` - preserve nested objects (optional, default `true`)
+* `depth` - nested object depth to begin preserving (optional, default `1`)
+* `removed` - consider missing properties as removed (optional, default `false`)
+
 
 Example
 -------
+
+Basic usage
 
 ```js
 var a = {foo: 1, bar: 2}
