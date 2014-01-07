@@ -13,7 +13,6 @@
  */
 
 var toString = Object.prototype.toString
-  , slice = Array.prototype.slice
 
 /**
  * Get all defaults
@@ -60,18 +59,6 @@ function isEmpty(obj) {
 
 function isObject(val) {
   return toString.call(val) === '[object Object]'
-}
-
-/**
- * Clone, sort, and stringify an array
- *
- * @param {Array} target
- * @returns {String} sorted stringified
- * @api private
- */
-
-function cloneSort(obj) {
-  return obj.slice(0).sort().toString()
 }
 
 /**
