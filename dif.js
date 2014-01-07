@@ -1,5 +1,5 @@
 /**
- * (c) 2012 Major League Soccer
+ * (c) 2012-2014 Major League Soccer
  * MIT Licensed
  * For all details and documentation:
  * https://github.com/majorleaguesoccer/dif.js
@@ -27,6 +27,7 @@ function defaults(options) {
     preserve: true // Preserve nested objects
   , depth: 1       // Preservation branch depth
   , removed: false // Consider missing props removed
+  , sort: false    // Sort arrays before comparison
   }
   options = options || {}
   for (var prop in options) {
@@ -82,7 +83,7 @@ function cloneSort(obj) {
  * @api private
  */
 
-function isEqual(a, b) {
+function isEqual(a, b, options) {
   var type = toString.call(a)
   if (type !== toString.call(b)) {
     return false
@@ -92,7 +93,20 @@ function isEqual(a, b) {
       : (a === 0 ? 1 / a === 1 / b : a === +b)
   } else if (type === '[object Array]') {
     // Simple array compare
-    return cloneSort(a) === cloneSort(b)
+    var size = a.length;
+    if (size !== b.length) {
+      return false
+    }
+    if (options.sort) {
+      a = a.slice(0).sort();
+      b = b.slice(0).sort();
+    }
+    while (size--) {
+      if (!isEqual(a[size], b[size], options)) {
+        return false
+      }
+    }
+    return true
   } else if (type === '[object Date]' || type === '[object Boolean]') {
     // Check primative values
     return +a === +b
@@ -111,7 +125,7 @@ function isEqual(a, b) {
     for (var prop in a) {
       if (!a.hasOwnProperty(prop)) continue
       if (!b.hasOwnProperty(prop)) return false
-      if (!isEqual(a[prop], b[prop])) return false
+      if (!isEqual(a[prop], b[prop], options)) return false
     }
     return true
   }
@@ -153,7 +167,7 @@ function dif(old, source, options, depth) {
       continue
     }
     // Find value equality, if equal continue on
-    equal = isEqual(val, cmp)
+    equal = isEqual(val, cmp, options)
     if (equal) continue
     
     // Nested objects, resurse through the object if we do not wish to 
@@ -181,7 +195,7 @@ function dif(old, source, options, depth) {
  * Current library version, should match `package.json`
  */
 
-dif.VERSION = '0.0.5'
+dif.VERSION = '0.0.6'
 
 /*!
  * Module exports.

@@ -1,8 +1,14 @@
 {
   "name": "dif"
-, "version": "0.0.5"
+, "version": "0.0.6"
 , "license": "MIT"
 , "author": "Beau Sorensen <mail@beausorensen.com> (http://github.com/sorensen)"
+, "contributors": [
+    {
+      "name": "Bryce Kahle"
+    , "email": "bkahle@gmail.com"
+    }
+  ]
 , "description": "Object diffing"
 , "repository": {
     "type": "git"

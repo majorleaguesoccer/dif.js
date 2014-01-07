@@ -29,6 +29,7 @@ You can supply an options hash as the third argument to change behavior
 * `preserve` - preserve nested objects (optional, default `true`)
 * `depth` - nested object depth to begin preserving (optional, default `1`)
 * `removed` - consider missing properties as removed (optional, default `false`)
+* `sort` - sort arrays before comparison. Effectively means array ordering does not matter. (optional, default `false`)
 
 
 Example
@@ -56,6 +57,10 @@ With [npm](https://npmjs.org)
 ```
 npm install dif
 ```
+
+Release Notes
+-------------
+* 0.0.6 - Improved Array comparison. Added `sort` option with default to false. Array ordering now matters.
 
 
 License
