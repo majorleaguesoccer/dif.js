@@ -143,7 +143,6 @@ function dif(old, source, options, depth) {
   for (var prop in source) {
     var val = old[prop]
       , cmp = source[prop]
-      , valType = toString.call(val)
       , equal = false
 
     // Ensure valid property
