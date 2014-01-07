@@ -1,9 +1,19 @@
 Dif.js
 ======
 
+> Find the difference between two objects.
+
 [![Build Status](https://travis-ci.org/majorleaguesoccer/dif.js.png?branch=master)](https://travis-ci.org/majorleaguesoccer/dif.js)
 
-Find the difference between two objects.
+
+Install
+-------
+
+With [npm](https://npmjs.org)
+
+```
+npm install dif
+```
 
 
 Usage
@@ -78,15 +88,6 @@ var c = dif(a, b)
 }
 ```
 
-
-Install
--------
-
-With [npm](https://npmjs.org)
-
-```
-npm install dif
-```
 
 Release Notes
 -------------
