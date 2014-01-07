@@ -93,13 +93,13 @@ function isEqual(a, b, options) {
       : (a === 0 ? 1 / a === 1 / b : a === +b)
   } else if (type === '[object Array]') {
     // Simple array compare
-    var size = a.length;
+    var size = a.length
     if (size !== b.length) {
       return false
     }
     if (options.sort) {
-      a = a.slice(0).sort();
-      b = b.slice(0).sort();
+      a = a.slice(0).sort()
+      b = b.slice(0).sort()
     }
     while (size--) {
       if (!isEqual(a[size], b[size], options)) {
