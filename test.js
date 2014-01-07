@@ -99,7 +99,7 @@ describe('dif.js', function() {
     ase(c.thing.meow.a, 'hi')
   })
   
-  it('should work with arrays', function() {
+  it('should work with arrays (sorted)', function() {
     var a = {
       foo: [1,2,3]
     , bar: ['a', 'b', true]
@@ -110,11 +110,36 @@ describe('dif.js', function() {
     , bar: [true, 'a', 'b']
     , baz: ['2', false, '20']
     }
-    var c = dif(a, b)
+    var c = dif(a, b, { sort: true })
     ase(c.foo, undefined)
     ase(c.bar, undefined)
     ase(c.baz.toString(), '2,false,20')
     ase(c.baz[1], false)
+
+    var d = dif(a, b)
+    ase(d.foo, b.foo)
+    ase(d.bar, b.bar)
+    ase(d.baz.toString(), '2,false,20')
+    ase(d.baz[1], false)
+  })
+
+  it('should work with arrays (non-sorted)', function() {
+    var a = {
+      foo: [1,2,3]
+    , bar: ['a', 'b', true]
+    , baz: ['1', true, 30]
+    }
+    var b = {
+      foo: [2,3,1]
+    , bar: [true, 'a', 'b']
+    , baz: ['2', false, '20']
+    }
+
+    var d = dif(a, b)
+    ase(d.foo, b.foo)
+    ase(d.bar, b.bar)
+    ase(d.baz.toString(), '2,false,20')
+    ase(d.baz[1], false)
   })
 
   it('should work with missing properties', function() {
@@ -265,7 +290,7 @@ describe('dif.js', function() {
         }
       }
     }
-    var c = dif(a, b)
+    var c = dif(a, b, { sort: true })
     ase(Object.keys(c).length, 0)
   })
 
