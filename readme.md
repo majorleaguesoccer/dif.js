@@ -1,7 +1,7 @@
 Dif.js
 ======
 
-[![Build Status](https://secure.travis-ci.org/majorleaguesoccer/dif.js.png)](http://travis-ci.org/majorleaguesoccer/dif.js) 
+[![Build Status](https://travis-ci.org/majorleaguesoccer/dif.js.png?branch=master)](https://travis-ci.org/majorleaguesoccer/dif.js)
 
 Find the difference between two objects.
 
