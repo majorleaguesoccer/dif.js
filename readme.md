@@ -47,6 +47,36 @@ var c = dif(a, b)
 // }
 ```
 
+We can find the diffs for nested objects as well
+
+```js
+var a = {
+  one: {
+    red: 2
+  , blue: 3 
+  , two: {
+      yellow: 4
+    , pink: 5
+    }
+  }
+}
+var b = {
+  one: {
+    two: {
+      'three'
+    }
+  }
+}
+var c = dif(a, b)
+{
+  one: {
+    two: {
+      'three'
+    }
+  }
+}
+```
+
 
 Install
 -------
