@@ -4,6 +4,8 @@ Dif.js
 > Find the difference between two objects.
 
 [![Build Status](https://travis-ci.org/majorleaguesoccer/dif.js.png?branch=master)](https://travis-ci.org/majorleaguesoccer/dif.js)
+[![devDependency Status](https://david-dm.org/majorleaguesoccer/dif.js.png)](https://david-dm.org/majorleaguesoccer/dif.js#info=dependencies)
+[![NPM version](https://badge.fury.io/js/dif.js.png)](http://badge.fury.io/js/dif.js)
 
 
 Install
