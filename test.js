@@ -27,6 +27,36 @@ describe('dif.js', function() {
     ase(c.bar, undefined)
     ase(c.baz, true)
   })
+
+  it('should preserve keys', function() {
+    var a = {
+      one: {
+        red: 2
+      , blue: 3 
+      , two: {
+          yellow: 4
+        , pink: 5
+        }
+      }
+    }
+    var b = {
+      one: {
+        red: 5
+      }
+    }
+    var c = dif(a, b)
+    ade(c, { one: { red: 5 } })
+    
+    var c = dif(a, b, {
+      depth: 3
+    })
+    ade(c, { one: { red: 5, blue: 3, two: { yellow: 4, pink: 5 } } })
+    
+    var c = dif(a, b, {
+      preserve: false
+    })
+    ade(c, { one: { red: 5, blue: 3, two: { yellow: 4, pink: 5 } } })
+  })
   
   it('should work with nested objects', function() {
     var a = {
